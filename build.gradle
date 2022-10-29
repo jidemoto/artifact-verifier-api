@@ -11,7 +11,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
@@ -24,7 +23,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = group
-            artifactId = rootProject.name
+            artifactId = 'artifact-verifier-api'
             version = version
 
             from components.java
