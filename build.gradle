@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group 'to.idemo'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = rootProject.name
+            version = version
+
+            from components.java
+        }
+    }
+}
