@@ -1,10 +1,12 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'signing'
 }
 
 group 'to.idemo'
 version '0.0.1'
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 repositories {
     mavenCentral()
@@ -16,8 +18,8 @@ java {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
 test {
@@ -25,13 +27,61 @@ test {
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = group
-            artifactId = 'artifact-verifier-api'
-            version = version
-
-            from components.java
+    repositories {
+        maven {
+            def releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isReleaseVersion ? releaseRepo : snapshotRepo
+            credentials {
+                username = project.hasProperty('ossrhUsername') ? ossrhUsername : "Unknown user"
+                password = project.hasProperty('ossrhPassword') ? ossrhPassword : "Unknown password"
+            }
         }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                groupId = group
+                name = 'artifact-verifier-api'
+                version = version
+                description = 'Artifact Verifier API classes'
+                url = 'https://github.com/jidemoto/artifact-verifier-api'
+                from components.java
+                developer {
+
+                }
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'jidemoto'
+                        name = 'James M Idemoto'
+                        email = 'james@idemo.to'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com/jidemoto/artifact-verifier-api.git'
+                    developerConnection = 'scm:git:git@github.com/jidemoto/artifact-verifier-api.git'
+                    url = 'https://github.com/jidemoto/artifact-verifier-api'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.mavenJava
+}
+
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
