@@ -19,7 +19,7 @@ and install them to your local repo at `~/.m2/repository`.
 
 1. Install this dependency (see above)
 2. Add `to.idemo:artifact-verifier-api:0.0.1` as an implementation dependency
-3. Create an implementation of Notifier
+3. Create an implementation of Notifier in the package `to.idemo.james.artifactverifier`
 4. Annotate it to appropriately be added to the Spring dependency graph
 5. Include the built jar on the artifact verifier's class path (`/opt/app/plugins`)
 6. Create a container using the new image
